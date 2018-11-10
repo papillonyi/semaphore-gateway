@@ -14,8 +14,9 @@ func main() {
 	app.Version = version.Version.String()
 	app.Action = server
 
-	if err :=app.Run(os.Args); err != nil {
+	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
+}
