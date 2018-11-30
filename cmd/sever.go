@@ -15,8 +15,15 @@ func server(c *cli.Context) error {
 		logrus.SetLevel(logrus.WarnLevel)
 	}
 
+	if c.Bool("port") {
+		return router.Load(
+			c.String("port"),
+			ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true),
+		)
+	}
+
 	return router.Load(
+		":8080",
 		ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true),
 	)
-
 }

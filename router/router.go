@@ -5,7 +5,7 @@ import (
 	"github.com/papillonyi/semaphore-gateway/server"
 )
 
-func Load(middleware ...gin.HandlerFunc) (err error) {
+func Load(addr string, middleware ...gin.HandlerFunc) (err error) {
 	e := gin.New()
 	e.Use(gin.Recovery())
 
@@ -14,5 +14,5 @@ func Load(middleware ...gin.HandlerFunc) (err error) {
 	e.GET("/version", server.Version)
 	e.GET("/healthz", server.Health)
 
-	return e.Run()
+	return e.Run(addr)
 }
