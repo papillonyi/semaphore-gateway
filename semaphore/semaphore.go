@@ -20,3 +20,9 @@ type task struct {
 	debug        bool
 	dryRun       bool
 }
+
+func (t *task) setTemplate() error{
+	return nil
+}
+
+func ()
