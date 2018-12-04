@@ -14,5 +14,7 @@ func Load(addr string, middleware ...gin.HandlerFunc) (err error) {
 	e.GET("/version", server.Version)
 	e.GET("/healthz", server.Health)
 
+	e.POST("/semaphore", server.Semaphore)
+
 	return e.Run(addr)
 }
