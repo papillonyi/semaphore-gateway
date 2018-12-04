@@ -34,6 +34,13 @@ func (t *DownloadTask) GetNewTask() (Task, error) {
 		ProjectId:   1,
 		Environment: env,
 	}
+
+	if t.Overwrite {
+		task.Playbook = ""
+	} else {
+		task.Playbook = ""
+	}
+
 	return task, nil
 }
 

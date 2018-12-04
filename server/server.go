@@ -33,7 +33,12 @@ func Semaphore(c *gin.Context) {
 		return
 	}
 	task.Login()
-	token := task.GetToken()
+	token, err := task.GetToken()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"task":  task,

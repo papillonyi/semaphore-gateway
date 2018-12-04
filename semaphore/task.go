@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type semaphore_token struct {
+type semaphoreToken struct {
 	Id      string    `json:"id"`
 	Created time.Time `json:"created"`
 	Expired bool      `json:"expired"`
@@ -40,7 +40,6 @@ func (t *Task) Login() {
 	}
 
 	authByte, _ := json.Marshal(auth)
-	//payload := strings.NewReader(string(authByte))
 
 	req, _ := http.NewRequest("POST", url, bytes.NewReader(authByte))
 
@@ -54,28 +53,34 @@ func (t *Task) Login() {
 
 }
 
-func (t *Task) GetToken() []interface{} {
+func (t *Task) GetToken() (tokens []string, err error) {
+	tokens = make([]string, 0, 5)
 	url := "http://10.11.88.73:3000/api/user/tokens"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	res, _ := t.client.Do(req)
+	res, err := t.client.Do(req)
+
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	var tokens []interface{}
-	err := json.Unmarshal(body, tokens)
+	var semaphoreTokens []semaphoreToken
+	err = json.Unmarshal(body, &semaphoreTokens)
 
 	if err != nil {
 		fmt.Println(err)
-		return tokens
+		return
 	}
 
-	fmt.Println(res)
-	fmt.Println(string(body))
-	fmt.Println(t.client)
-	return tokens
+	for _, element := range semaphoreTokens {
+		tokens = append(tokens, element.Id)
+	}
+
+	return tokens, nil
 }
 
 func (t *Task) setTemplate() error {
