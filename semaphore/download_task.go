@@ -1,19 +1,12 @@
 package semaphore
 
-type environment struct {
-	path string
-	url  string
-	md5  string
-	user string
-}
-
-//
-//type template struct {
-//	templateId int
-//	inventory
-//}
+import (
+	"fmt"
+	"github.com/google/uuid"
+)
 
 type DownloadTask struct {
+	uuid            uuid.UUID
 	Path            string   `json:"path"`
 	DownloadAddress string   `json:"download_address"`
 	Ips             []string `json:"ips"`
@@ -30,15 +23,20 @@ func (t *DownloadTask) GetNewTask() (Task, error) {
 		user: t.User,
 	}
 
+	fmt.Println(env)
+
 	task := Task{
+		uuid:        uuid.New(),
 		ProjectId:   1,
 		Environment: env,
 	}
 
+	fmt.Println(task)
+
 	if t.Overwrite {
-		task.Playbook = ""
+		task.Playbook = "file-download/download_file_force"
 	} else {
-		task.Playbook = ""
+		task.Playbook = "file-download/download_file"
 	}
 
 	return task, nil

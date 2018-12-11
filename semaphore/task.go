@@ -3,21 +3,13 @@ package semaphore
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"github.com/google/uuid"
 	"net/http"
 	"net/http/cookiejar"
-	"time"
 )
 
-type semaphoreToken struct {
-	Id      string    `json:"id"`
-	Created time.Time `json:"created"`
-	Expired bool      `json:"expired"`
-	UserID  int       `json:"user_id"`
-}
-
 type Task struct {
+	uuid         uuid.UUID
 	ProjectId    int `json:"projectId"`
 	RepositoryId int `json:"repositoryId"`
 	InventoryId  int `json:"InventoryId"`
@@ -25,9 +17,8 @@ type Task struct {
 	Playbook     string `json:"Playbook" binding:"required"`
 	Debug        bool   `json:"Debug"`
 	DryRun       bool   `json:"DryRun"`
-	token        string
 	client       *http.Client
-	jar          map[string][]*http.Cookie
+	inventory    inventory
 }
 
 func (t *Task) Login() {
@@ -50,43 +41,4 @@ func (t *Task) Login() {
 	client.Do(req)
 
 	t.client = client
-
-}
-
-func (t *Task) GetToken() (tokens []string, err error) {
-	tokens = make([]string, 0, 5)
-	url := "http://10.11.88.73:3000/api/user/tokens"
-
-	req, _ := http.NewRequest("GET", url, nil)
-
-	res, err := t.client.Do(req)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	var semaphoreTokens []semaphoreToken
-	err = json.Unmarshal(body, &semaphoreTokens)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	for _, element := range semaphoreTokens {
-		tokens = append(tokens, element.Id)
-	}
-
-	return tokens, nil
-}
-
-func (t *Task) setTemplate() error {
-	return nil
-}
-
-func (t *Task) setInventory() error {
-	return nil
 }
