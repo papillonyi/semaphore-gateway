@@ -34,14 +34,14 @@ func Semaphore(c *gin.Context) {
 	}
 	task.Login()
 
-	err = task.SetInventory()
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	//err = task.SetInventory()
+	//
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
 	task.SetEnvironment()
-	task.SetTemplate()
+	//task.SetTemplate()
 
 	c.JSON(200, gin.H{
 		"task":  task,

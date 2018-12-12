@@ -10,21 +10,23 @@ import (
 
 type environment struct {
 	Id   int
-	path string
-	url  string
-	md5  string
-	user string
+	Path string `json:"path"`
+	Url  string `json:"url"`
+	Md5  string `json:"md5"`
+	User string `json:"user"`
 }
 
 func (t *Task) SetEnvironment() error {
 	url := "http://10.11.88.73:3000/api/project/2/environment"
+
+	jsonEnv, err := json.Marshal(t.Environment)
+
+	if err != nil {
+		fmt.Println(err)
+	}
 	body := map[string]interface{}{
-		"environment": map[string]interface{}{
-			"path": t.Environment.path,
-			"url":  t.Environment.url,
-			"md5":  t.Environment.md5,
-			"user": t.Environment.user,
-		},
+		"name": t.uuid,
+		"json": string(jsonEnv),
 	}
 	bodyByte, _ := json.Marshal(body)
 	req, _ := http.NewRequest("POST", url, bytes.NewReader(bodyByte))
@@ -36,7 +38,14 @@ func (t *Task) SetEnvironment() error {
 
 	responseBody, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
-	err = json.Unmarshal(responseBody, &t.inventory)
+
+	response := new(map[string]interface{})
+
+	fmt.Println(responseBody)
+
+	err = json.Unmarshal(responseBody, response)
+
+	fmt.Println(response)
 
 	if err != nil {
 		fmt.Println(err)

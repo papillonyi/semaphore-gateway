@@ -17,10 +17,10 @@ type DownloadTask struct {
 
 func (t *DownloadTask) GetNewTask() (Task, error) {
 	env := environment{
-		path: t.Path,
-		url:  t.DownloadAddress,
-		md5:  t.Md5,
-		user: t.User,
+		Path: t.Path,
+		Url:  t.DownloadAddress,
+		Md5:  t.Md5,
+		User: t.User,
 	}
 
 	fmt.Println(env)
